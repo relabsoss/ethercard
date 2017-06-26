@@ -374,9 +374,13 @@ uint8_t EtherCard::ntpProcessAnswer (uint32_t *time,uint8_t dstport_l) {
 }
 
 void EtherCard::udpPrepare (uint16_t sport, const uint8_t *dip, uint16_t dport) {
-    if(is_lan(myip, dip)) {                    // this works because both dns mac and destinations mac are stored in same variable - destmacaddr
-        setMACandIPs(destmacaddr, dip);        // at different times. The program could have separate variable for dns mac, then here should be
-    } else {                                   // checked if dip is dns ip and separately if dip is hisip and then use correct mac.
+    if(is_lan(myip, dip)) {
+        // this works because both dns mac and destinations mac are stored in same variable - destmacaddr
+        // at different times. The program could have separate variable for dns mac, then here should be
+        // checked if dip is dns ip and separately if dip is hisip and then use correct mac.
+        if(has_dest_mac) setMACandIPs(destmacaddr, dip);
+        else setMACandIPs(gwmacaddr, dip);
+    } else {
         setMACandIPs(gwmacaddr, dip);
     }
     // see http://tldp.org/HOWTO/Multicast-HOWTO-2.html
